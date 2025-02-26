@@ -1,9 +1,9 @@
-select * from student where age between 10 and 15;
+select * from "public".student where age between 0 and 12;
 
-select name from student;
+select name from "public".student;
 
-select * from student where student.name like '%o%';
+select * from "public".student where student.name like '%o%';
 
-select * from student where student.age < student.id;
+select * from "public".student where student.age < student.id;
 
-select * from student order by age asc;
+select * from "public".student order by age asc;

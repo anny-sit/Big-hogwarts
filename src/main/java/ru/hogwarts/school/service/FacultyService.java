@@ -20,24 +20,30 @@ public class FacultyService {
     }
 
     public Faculty findFaculty(Long id) {
-        return facultyRepository.getById(id);
+        return facultyRepository.findById(id).get();
     }
 
-    public Faculty findByNameIgnoreCase(String name) { return facultyRepository.findByNameIgnoreCase(name);}
+    public Faculty findByNameIgnoreCase(String name) {
+        return facultyRepository.findByNameIgnoreCase(name);
+    }
 
     public Faculty editFaculty(Faculty faculty) {
-
-        if (facultyRepository.findByName(faculty.getName()) == null) {
+        if (findFaculty(faculty.getId()) == null) {
             return null;
         }
-        return facultyRepository.save(faculty);
+        Faculty faculty1 = findFaculty(faculty.getId());
+        faculty1.setName(faculty.getName());
+        faculty1.setColor(faculty.getColor());
+
+        return facultyRepository.save(faculty1);
     }
 
-    public void deleteFaculty(Long id) {
+    public void deleteFaculty(long id) {
         facultyRepository.deleteById(id);
-    }
-    public Faculty findByColor(String color) {
 
+    }
+
+    public Faculty findByColor(String color) {
         return facultyRepository.findByColorIgnoreCase(color);
     }
 }

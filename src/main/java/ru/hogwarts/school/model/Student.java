@@ -11,16 +11,23 @@ public class Student {
     private long id;
     private String name;
     private Integer age;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
+    public Student() {
+    }
 
     public Student(long id, String name, Integer age, Faculty faculty) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.faculty = faculty;
+        if (faculty == null) {
+            this.faculty = null;
+        } else {
+            this.faculty = faculty;
+        }
     }
 
     @Override
@@ -73,5 +80,9 @@ public class Student {
 
     public Faculty getFaculty() {
         return faculty;
+    }
+
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
     }
 }

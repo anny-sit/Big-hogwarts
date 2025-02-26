@@ -10,10 +10,14 @@ public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     private String name, color;
+
     @OneToMany(mappedBy = "faculty")
     private Collection<Student> students;
 
+    public Faculty() {
+    }
 
     public Faculty(long id, String name, String color) {
         this.id = id;
@@ -49,7 +53,7 @@ public class Faculty {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
