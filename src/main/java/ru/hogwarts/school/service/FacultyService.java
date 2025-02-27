@@ -19,28 +19,31 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty findFaculty(long id) {
-        return facultyRepository.getById(id);
+    public Faculty findFaculty(Long id) {
+        return facultyRepository.findById(id).get();
+    }
+
+    public Faculty findByNameIgnoreCase(String name) {
+        return facultyRepository.findByNameIgnoreCase(name);
     }
 
     public Faculty editFaculty(Faculty faculty) {
-
-        if (facultyRepository.findByName(faculty.getName()) == null) {
+        if (findFaculty(faculty.getId()) == null) {
             return null;
         }
-        return facultyRepository.save(faculty);
+        Faculty faculty1 = findFaculty(faculty.getId());
+        faculty1.setName(faculty.getName());
+        faculty1.setColor(faculty.getColor());
+
+        return facultyRepository.save(faculty1);
     }
 
     public void deleteFaculty(long id) {
         facultyRepository.deleteById(id);
+
     }
-    public Collection<Faculty> findByColor(String color) {
-        List<Faculty> result = facultyRepository.findAll();
-        for (Faculty faculty : result) {
-            if (Objects.equals(faculty.getColor(), color)) {
-                result.add(faculty);
-            }
-        }
-        return result;
+
+    public Faculty findByColor(String color) {
+        return facultyRepository.findByColorIgnoreCase(color);
     }
 }
