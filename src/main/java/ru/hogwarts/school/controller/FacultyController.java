@@ -5,38 +5,37 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.FacultyServiceImpl;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
 
-    private final FacultyService facultyService;
+    private final FacultyServiceImpl facultyServiceImpl;
 
-    public FacultyController(FacultyService facultyService) {
-        this.facultyService = facultyService;
+    public FacultyController(FacultyServiceImpl facultyServiceImpl) {
+        this.facultyServiceImpl = facultyServiceImpl;
     }
 
     @PostMapping
     public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.addFaculty(faculty);
+        return facultyServiceImpl.addFaculty(faculty);
     }
 
     @PutMapping
     public ResponseEntity<Faculty> editFaculty(@RequestBody Faculty faculty) {
-        Faculty foundFaculty = facultyService.findFaculty(faculty.getId());
+        Faculty foundFaculty = facultyServiceImpl.findFaculty(faculty.getId());
         if (foundFaculty == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-        return ResponseEntity.ok(facultyService.editFaculty(faculty));
+        return ResponseEntity.ok(facultyServiceImpl.editFaculty(faculty));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteFaculty(@RequestParam long id) {
-        facultyService.deleteFaculty(id);
+        facultyServiceImpl.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }
 
@@ -45,13 +44,13 @@ public class FacultyController {
                                @RequestParam(required = false) String name,
                                @RequestParam(required = false) Long id) {
         if (color != null) {
-            return facultyService.findByColor(color);
+            return facultyServiceImpl.findByColor(color);
         }
         if (name != null) {
-            return facultyService.findByNameIgnoreCase(name);
+            return facultyServiceImpl.findByNameIgnoreCase(name);
         }
         if (id != null) {
-            return facultyService.findFaculty(id);
+            return facultyServiceImpl.findFaculty(id);
         }
         return (Faculty) Collections.emptyList();
     }
