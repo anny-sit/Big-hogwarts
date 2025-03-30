@@ -1,16 +1,20 @@
 package ru.hogwarts.school.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
+
     private String name;
     private Integer age;
+
 
     @ManyToOne
     @JoinColumn(name = "faculty_id")
@@ -19,8 +23,7 @@ public class Student {
     public Student() {
     }
 
-    public Student(long id, String name, Integer age, Faculty faculty) {
-        this.id = id;
+    public Student(String name, Integer age, Faculty faculty) {
         this.name = name;
         this.age = age;
         if (faculty == null) {
@@ -37,7 +40,7 @@ public class Student {
         if (o == null || getClass() != o.getClass())
             return false;
         Student student = (Student) o;
-        return id == student.id && age == student.age && Objects.equals(name, student.name);
+        return Objects.equals(id, student.id) && Objects.equals(age, student.age) && Objects.equals(name, student.name);
     }
 
     @Override
@@ -54,7 +57,7 @@ public class Student {
                 '}';
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

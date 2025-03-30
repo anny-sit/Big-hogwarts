@@ -1,39 +1,50 @@
 package ru.hogwarts.school.service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.model.StudentSearchCriteria;
 import ru.hogwarts.school.repository.StudentRepository;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
+    //private final FacultyServiceImpl facultyService;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+    public StudentServiceImpl(StudentRepository studentRepository/*, FacultyServiceImpl facultyService*/) {
         this.studentRepository = studentRepository;
+        //this.facultyService = facultyService;
     }
 
     public Student addStudent(Student student) {
         return studentRepository.save(student);
     }
 
-    public Student findStudent(long id) {
-        return studentRepository.findById(id).get();
-    }
-    public Student findStudentByName(String name) {
-        return studentRepository.findByName(name);
+    public Student findStudent(Long id) {
+        return studentRepository.findById(id)
+                .orElse(null);
     }
 
+
     public Student editStudent(Student student) {
+
         if (findStudent(student.getId()) == null) {
             return null;
         }
-        Student student1 = (Student) findStudent(student.getId()); // если один или несколько параметров null? дописать проверки
+
+        Student student1 = findStudent(student.getId());
         student1.setName(student.getName());
         student1.setAge(student.getAge());
-        student1.setFaculty(student.getFaculty());
+
+        /*if (facultyService.findFaculty(student.getFaculty().getId()) == null && student.getFaculty() != null) {
+            student1.setFaculty(facultyService.addFaculty(student.getFaculty()));
+        } else {
+            student1.setFaculty(student.getFaculty());
+        }*/
+
         return studentRepository.save(student1);
     }
 
@@ -41,13 +52,32 @@ public class StudentServiceImpl implements StudentService {
         studentRepository.deleteById(id);
     }
 
-    public Collection<Student> findByAge(Integer age) {
-        return studentRepository.findByAge(age);
-    }
+    public Collection<Student> getAllStudents(StudentSearchCriteria searchCriteria) {
 
-    public Collection<Student> findByAgeBetween(Integer min, Integer max) {
-        return studentRepository.findByAgeBetween(min, max);
-    }
+        if (searchCriteria.ageMax() != null) {
+            return studentRepository.findAll()
+                    .stream()
+                    .filter(a -> Optional.ofNullable(searchCriteria.id())
+                            .map(c -> c.equals(a.getId())).orElse(true))
+                    .filter(a -> Optional.ofNullable(searchCriteria.name())
+                            .map(c -> c.equals(a.getName())).orElse(true))
+                    .filter(a -> Optional.ofNullable(searchCriteria.ageMax())
+                            .map(c -> c >= a.getAge()).orElse(true))
+                    .filter(a -> Optional.ofNullable(searchCriteria.age())
+                            .map(c -> c <= a.getAge()).orElse(true))
+                    .toList();
+        }
 
+        return studentRepository.findAll()
+                .stream()
+                .filter(a -> Optional.ofNullable(searchCriteria.id())
+                        .map(c -> c.equals(a.getId())).orElse(true))
+                .filter(a -> Optional.ofNullable(searchCriteria.name())
+                        .map(c -> c.equals(a.getName())).orElse(true))
+                .filter(a -> Optional.ofNullable(searchCriteria.age())
+                        .map(c -> c.equals(a.getAge())).orElse(true))
+                .toList();
+
+    }
 
 }

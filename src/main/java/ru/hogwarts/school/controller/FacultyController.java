@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.FacultySearchCritera;
 import ru.hogwarts.school.service.FacultyServiceImpl;
 
-import java.util.Collections;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/faculty")
@@ -33,25 +34,20 @@ public class FacultyController {
         return ResponseEntity.ok(facultyServiceImpl.editFaculty(faculty));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteFaculty(@RequestParam long id) {
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
         facultyServiceImpl.deleteFaculty(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public Faculty findFaculty(@RequestParam(required = false) String color,
-                               @RequestParam(required = false) String name,
-                               @RequestParam(required = false) Long id) {
-        if (color != null) {
-            return facultyServiceImpl.findByColor(color);
-        }
-        if (name != null) {
-            return facultyServiceImpl.findByNameIgnoreCase(name);
-        }
-        if (id != null) {
-            return facultyServiceImpl.findFaculty(id);
-        }
-        return (Faculty) Collections.emptyList();
+    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color,
+                                                             @RequestParam(required = false) String name,
+                                                             @RequestParam(required = false) Long id) {
+
+        FacultySearchCritera facultySearchCritera = new FacultySearchCritera(name, color, id);
+
+        return ResponseEntity.ok(facultyServiceImpl.getAllFaculties(facultySearchCritera));
     }
+
 }
