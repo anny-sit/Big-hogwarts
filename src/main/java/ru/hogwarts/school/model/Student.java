@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+/*@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)*/
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

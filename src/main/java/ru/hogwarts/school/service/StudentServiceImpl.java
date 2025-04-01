@@ -1,11 +1,13 @@
 package ru.hogwarts.school.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.StudentSearchCriteria;
+import ru.hogwarts.school.repository.GetLastFiveStudents;
 import ru.hogwarts.school.repository.StudentRepository;
 
 @Service
@@ -78,6 +80,18 @@ public class StudentServiceImpl implements StudentService {
                         .map(c -> c.equals(a.getAge())).orElse(true))
                 .toList();
 
+    }
+
+    public Integer getCountOfStudents() {
+        return studentRepository.getCountOfStudents();
+    }
+
+    public Double getAvgAgeOfStudents() {
+        return studentRepository.getAvgAgeOfStudents();
+    }
+
+    public List<GetLastFiveStudents> getLastFiveStudents() {
+        return studentRepository.getLastFiveStudents();
     }
 
 }

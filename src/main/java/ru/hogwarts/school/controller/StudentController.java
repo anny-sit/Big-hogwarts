@@ -9,6 +9,8 @@ import ru.hogwarts.school.model.StudentSearchCriteria;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/student")
@@ -50,6 +52,25 @@ public class StudentController {
         StudentSearchCriteria studentSearchCriteria = new StudentSearchCriteria(name, age, ageMax, id);
 
         return ResponseEntity.ok(studentServiceImpl.getAllStudents(studentSearchCriteria));
+    }
+
+
+    @GetMapping("/last5")
+    public ResponseEntity getLastFiveStudents() {
+        return ResponseEntity.ok(studentServiceImpl.getLastFiveStudents());
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getCount() {
+        Integer count = studentServiceImpl.getCountOfStudents();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/avg-age")
+    public ResponseEntity<Map<String, Double>> getAvgAge() {
+        Double avgAge = studentServiceImpl.getAvgAgeOfStudents().doubleValue();
+        System.out.println(avgAge + " " + avgAge.getClass());
+        return ResponseEntity.ok(Collections.singletonMap("averageAge", avgAge));
     }
 
 }
