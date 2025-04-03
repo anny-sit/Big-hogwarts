@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.StudentSearchCriteria;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.GetLastFiveStudents;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -14,11 +15,11 @@ import ru.hogwarts.school.repository.StudentRepository;
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
-    //private final FacultyServiceImpl facultyService;
+    private final FacultyRepository facultyRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository/*, FacultyServiceImpl facultyService*/) {
+    public StudentServiceImpl(StudentRepository studentRepository, FacultyRepository facultyRepository) {
         this.studentRepository = studentRepository;
-        //this.facultyService = facultyService;
+        this.facultyRepository = facultyRepository;
     }
 
     public Student addStudent(Student student) {
@@ -41,11 +42,11 @@ public class StudentServiceImpl implements StudentService {
         student1.setName(student.getName());
         student1.setAge(student.getAge());
 
-        /*if (facultyService.findFaculty(student.getFaculty().getId()) == null && student.getFaculty() != null) {
-            student1.setFaculty(facultyService.addFaculty(student.getFaculty()));
+        if (!facultyRepository.existsById(student.getFaculty().getId()) && student.getFaculty() != null) {
+            student1.setFaculty(facultyRepository.save(student.getFaculty()));
         } else {
             student1.setFaculty(student.getFaculty());
-        }*/
+        }
 
         return studentRepository.save(student1);
     }
