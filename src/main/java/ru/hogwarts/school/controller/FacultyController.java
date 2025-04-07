@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.FacultySearchCritera;
+import ru.hogwarts.school.model.FacultySearchCriteria;
 import ru.hogwarts.school.service.FacultyServiceImpl;
 
 import java.util.Collection;
@@ -45,9 +45,9 @@ public class FacultyController {
                                                              @RequestParam(required = false) String name,
                                                              @RequestParam(required = false) Long id) {
 
-        FacultySearchCritera facultySearchCritera = new FacultySearchCritera(name, color, id);
+        FacultySearchCriteria facultySearchCriteria = new FacultySearchCriteria(name, color, id);
 
-        return ResponseEntity.ok(facultyServiceImpl.getAllFaculties(facultySearchCritera));
+        return ResponseEntity.ok(facultyServiceImpl.getAllFaculties(facultySearchCriteria));
     }
 
 }
