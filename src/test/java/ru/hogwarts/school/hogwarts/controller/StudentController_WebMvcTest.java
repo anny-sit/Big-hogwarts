@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.StudentServiceImpl;
 
@@ -32,7 +33,10 @@ public class StudentController_WebMvcTest {
     @Mock
     private StudentRepository studentRepository;
 
-    @SpyBean
+    @Mock
+    private FacultyRepository facultyRepository;
+
+    @Mock
     private StudentServiceImpl studentService;
 
     @Test
@@ -52,6 +56,7 @@ public class StudentController_WebMvcTest {
         student.setAge(age);
 
         when(studentRepository.save(any(Student.class))).thenReturn(student);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/student")
@@ -78,6 +83,8 @@ public class StudentController_WebMvcTest {
         List<Student> studentList = List.of(student);
 
         when(studentRepository.findAll()).thenReturn(studentList);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
 
         mockMvc.perform(MockMvcRequestBuilders.get("/student?id=" + id)
                         .accept(MediaType.APPLICATION_JSON))
@@ -102,6 +109,8 @@ public class StudentController_WebMvcTest {
         List<Student> studentList = List.of(student);
 
         when(studentRepository.findAll()).thenReturn(studentList);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
 
         mockMvc.perform(MockMvcRequestBuilders.get("/student?name=" + name)
                         .accept(MediaType.APPLICATION_JSON))
@@ -126,6 +135,8 @@ public class StudentController_WebMvcTest {
         List<Student> studentList = List.of(student);
 
         when(studentRepository.findAll()).thenReturn(studentList);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
 
         mockMvc.perform(MockMvcRequestBuilders.get("/student?age=" + age)
                         .accept(MediaType.APPLICATION_JSON))
@@ -154,6 +165,8 @@ public class StudentController_WebMvcTest {
 
         when(studentRepository.findById(any(Long.class))).thenReturn(Optional.of(student));
         when(studentRepository.save(any(Student.class))).thenReturn(student);
+        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/student")

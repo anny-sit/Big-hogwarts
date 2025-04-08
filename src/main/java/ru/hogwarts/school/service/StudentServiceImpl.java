@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.model.StudentSearchCriteria;
@@ -14,6 +16,8 @@ import ru.hogwarts.school.repository.StudentRepository;
 @Service
 public class StudentServiceImpl implements StudentService {
 
+    Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
 
@@ -23,18 +27,22 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Student addStudent(Student student) {
+        logger.info("Was invoked method for create student");
         return studentRepository.save(student);
     }
 
     public Student findStudent(Long id) {
+        logger.info("Was invoked method for finding student");
         return studentRepository.findById(id)
                 .orElse(null);
     }
 
 
     public Student editStudent(Student student) {
+        logger.info("Was invoked method for edit student");
 
         if (findStudent(student.getId()) == null) {
+            logger.error("No such student ID");
             return null;
         }
 
@@ -43,6 +51,7 @@ public class StudentServiceImpl implements StudentService {
         student1.setAge(student.getAge());
 
         if (!facultyRepository.existsById(student.getFaculty().getId()) && student.getFaculty() != null) {
+            logger.debug("No such faculty or faculty is empty");
             student1.setFaculty(facultyRepository.save(student.getFaculty()));
         } else {
             student1.setFaculty(student.getFaculty());
@@ -52,10 +61,15 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public void deleteStudent(long id) {
+        logger.info("Was invoked method for delete student");
+        if (studentRepository.findById(id) == null) {
+            logger.debug("Can't delete absent student");
+        }
         studentRepository.deleteById(id);
     }
 
     public Collection<Student> getAllStudents(StudentSearchCriteria searchCriteria) {
+        logger.info("Was invoked method for getting all students with criteria");
 
         if (searchCriteria.ageMax() != null) {
             return studentRepository.findAll()
@@ -84,14 +98,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Integer getCountOfStudents() {
+        logger.info("Was invoked method for counting students");
         return studentRepository.getCountOfStudents();
     }
 
     public Double getAvgAgeOfStudents() {
+        logger.info("Was invoked method for getting avg age of students");
         return studentRepository.getAvgAgeOfStudents();
     }
 
     public List<GetLastFiveStudents> getLastFiveStudents() {
+        logger.info("Was invoked method for getting last 5 students");
         return studentRepository.getLastFiveStudents();
     }
 
