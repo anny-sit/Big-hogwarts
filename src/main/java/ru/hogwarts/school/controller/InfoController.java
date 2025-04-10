@@ -2,9 +2,11 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.hogwarts.school.service.InfoServiceImpl;
 
 import java.util.stream.Stream;
 
@@ -15,20 +17,21 @@ public class InfoController {
     @Autowired
     private ServletWebServerApplicationContext webServerAppCtxt;
 
+    private final InfoServiceImpl infoService;
+
+    public InfoController(InfoServiceImpl infoService) {
+        this.infoService = infoService;
+    }
+
+
     @GetMapping
-    public Integer getPort() {
-        int port = webServerAppCtxt.getWebServer().getPort();
-        return port;
+    public ResponseEntity<Integer> getPort() {
+        return ResponseEntity.ok(infoService.getPort());
     }
 
     @GetMapping("/someNumber")
-    public Long getNumber() {
-        long sum = Stream.iterate(1l, a -> a + 1)
-                .limit(1_000_000)
-                .parallel()
-                .reduce(0l, (Long::sum));
-
-        return sum;
+    public ResponseEntity<Long> getNumber() {
+        return ResponseEntity.ok(infoService.getNumber());
     }
 }
 
