@@ -8,6 +8,7 @@ import ru.hogwarts.school.model.FacultySearchCriteria;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Service
@@ -68,5 +69,14 @@ public class FacultyServiceImpl implements FacultyService {
                 .filter(a -> Optional.ofNullable(criteria.color()).map(c -> c.equals(a.getColor())).orElse(true))
                 .filter(b -> Optional.ofNullable(criteria.name()).map(c -> c.equals(b.getName())).orElse(true))
                 .toList();
+    }
+
+    public String getTheLongestFacultyName() {
+        return facultyRepository.findAll()
+                .stream()
+                .parallel()
+                .max(Comparator.comparingInt(faculty -> faculty.getName().length()))
+                .map(Faculty::getName)
+                .orElse("");
     }
 }

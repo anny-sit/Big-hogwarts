@@ -69,8 +69,12 @@ public class StudentController {
     @GetMapping("/avg-age")
     public ResponseEntity<Map<String, Double>> getAvgAge() {
         Double avgAge = studentServiceImpl.getAvgAgeOfStudents().doubleValue();
-        System.out.println(avgAge + " " + avgAge.getClass());
         return ResponseEntity.ok(Collections.singletonMap("averageAge", avgAge));
+    }
+
+    @GetMapping("/letter")
+    public ResponseEntity<Collection<String>> getAllStudentsStartedWithLetter(@RequestParam String letter) {
+        return ResponseEntity.ok(studentServiceImpl.getNamesStartedWithLetter(letter));
     }
 
 }
