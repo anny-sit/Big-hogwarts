@@ -18,6 +18,8 @@ import ru.hogwarts.school.repository.StudentRepository;
 public class StudentServiceImpl implements StudentService {
 
     Logger logger = LoggerFactory.getLogger(StudentServiceImpl.class);
+    final Object flag = new Object();
+    int counter = 0;
 
     private final StudentRepository studentRepository;
     private final FacultyRepository facultyRepository;
@@ -124,6 +126,23 @@ public class StudentServiceImpl implements StudentService {
                 .map(a -> a.getName())
                 .filter(a -> a.startsWith(letter))
                 .toList();
+    }
+
+    public List<String> getNamesCollectionForThreads(Integer count) {
+        return studentRepository.findAll()
+                .stream()
+                .map(a -> a.getName())
+                .limit(count)
+                .toList();
+    }
+
+    public String printNameWithNumberSync(String name) {
+        String toReturn;
+        synchronized (flag) {
+            toReturn = "Name " + counter + " is " + name;
+            counter++;
+        }
+        return toReturn;
     }
 
 }

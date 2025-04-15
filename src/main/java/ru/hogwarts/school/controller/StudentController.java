@@ -10,6 +10,7 @@ import ru.hogwarts.school.service.StudentServiceImpl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -75,6 +76,72 @@ public class StudentController {
     @GetMapping("/letter")
     public ResponseEntity<Collection<String>> getAllStudentsStartedWithLetter(@RequestParam String letter) {
         return ResponseEntity.ok(studentServiceImpl.getNamesStartedWithLetter(letter));
+    }
+
+    @GetMapping("/print-parallel")
+    public ResponseEntity<String> printNamesParallel() {
+        List<String> incoming = studentServiceImpl.getNamesCollectionForThreads(6);
+
+        incoming.stream().forEach(System.out::println);
+
+        System.out.println("First name: " + incoming.get(0));
+        System.out.println("Second name: " + incoming.get(1));
+
+        new Thread(() -> {
+            System.out.println("Third name: " + incoming.get(2));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Fourth name: " + incoming.get(3));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("Fifth name: " + incoming.get(4));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Sixth name: " + incoming.get(5));
+        }).start();
+
+        return ResponseEntity.ok("The result is displayed in the console");
+
+    }
+
+
+    @GetMapping("/print-synchronized")
+    public ResponseEntity<String> printNamesSynchronized() {
+        List<String> incoming = studentServiceImpl.getNamesCollectionForThreads(6);
+
+        incoming.stream().forEach(System.out::println);
+
+        System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(0)));
+        System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(1)));
+
+        new Thread(() -> {
+            System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(2)));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(3)));
+        }).start();
+
+        new Thread(() -> {
+            System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(4)));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println(studentServiceImpl.printNameWithNumberSync(incoming.get(5)));
+        }).start();
+
+        return ResponseEntity.ok("The result is displayed in the console");
     }
 
 }
